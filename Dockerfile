@@ -25,8 +25,8 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview5-buster AS build
 WORKDIR /app
 # Copy everything and build
 COPY . ./
-RUN dotnet restore "./HollyTest.Server/HolyTest.Server.csproj"
-RUN dotnet publish "./HollyTest.Server/HolyTest.Server.csproj" -c Release -o out
+RUN dotnet restore "./HollyTest.Server/HollyTest.Server.csproj"
+RUN dotnet publish "./HollyTest.Server/HollyTest.Server.csproj" -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview5-buster-slim
 WORKDIR /app

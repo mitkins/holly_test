@@ -21,14 +21,16 @@
 # COPY --from=node /app/build ./wwwroot
 # ENTRYPOINT ["./AspNetCoreDemoApp"]
 
-FROM mcr.microsoft.com/dotnet/core-nightly/sdk:3.0.100-preview7-disco AS build-env
+# Latest .NET Core from https://hub.docker.com/_/microsoft-dotnet-core-sdk/ (not the nightly one)
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-disco AS build-env
 WORKDIR /app
 # Copy everything and build
 COPY . ./
 RUN dotnet restore "./HollyTest.Server/HollyTest.Server.csproj"
 RUN dotnet publish "./HollyTest.Server/HollyTest.Server.csproj" -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/core-nightly/aspnet:3.0.0-preview7-disco
+# Latest ASP.NET Core from https://hub.docker.com/_/microsoft-dotnet-core-aspnet/ (not the nightly one)
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview6-disco
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
 WORKDIR /app

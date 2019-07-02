@@ -21,12 +21,12 @@
 # COPY --from=node /app/build ./wwwroot
 # ENTRYPOINT ["./AspNetCoreDemoApp"]
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview7-buster AS build
 WORKDIR /app
 # Copy everything and build
 COPY . ./
-RUN dotnet restore "./HollyTest.Server/Blazor20Questions.Server.csproj"
-RUN dotnet publish "./HollyTest.Server/Blazor20Questions.Server.csproj" -c Release -o out
+RUN dotnet restore "./HollyTest.Server/HolyTest.Server.csproj"
+RUN dotnet publish "./HollyTest.Server/HolyTest.Server.csproj" -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview7-buster-slim
 WORKDIR /app

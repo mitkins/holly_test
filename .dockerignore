@@ -1,0 +1,9 @@
+node_modules
+build
+
+**/bin/
+**/obj/
+**/global.json
+**/Dockerfile*
+**/.dockerignore*
+**/*.user

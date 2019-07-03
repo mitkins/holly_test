@@ -28,7 +28,8 @@ WORKDIR /app
 COPY . ./
 RUN dotnet restore "./HollyTest.Server/HollyTest.Server.csproj"
 RUN dotnet publish "./HollyTest.Server/HollyTest.Server.csproj" -c Release -o out
-COPY ./HollyTest.Client/wwwroot/* ./out/wwwroot/
+RUN cp -Rf ./out/wwwroot/_content/hollytestclient/* ./out/wwwroot/
+#COPY ./HollyTest.Client/wwwroot/* ./out/wwwroot/
 
 # Latest ASP.NET Core from https://hub.docker.com/_/microsoft-dotnet-core-aspnet/ (not the nightly one)
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview6-disco

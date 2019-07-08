@@ -3,6 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <UserSecretsId>aspnet-HollyTest-2F9C7111-1CDF-418C-8B6B-8001F7E49A0D</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview6.19304.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0-preview6.19304.10" />
+  </ItemGroup>
 
 </Project>

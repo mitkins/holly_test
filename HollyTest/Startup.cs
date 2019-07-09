@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 
 namespace HollyTest
 {
@@ -41,31 +42,44 @@ namespace HollyTest
 
             //services.AddCognitoIdentity();
 
-            services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
+            //services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
 
-            var serviceProvider = services.BuildServiceProvider();
-            var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();
+            //var serviceProvider = services.BuildServiceProvider();
+            //var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddOpenIdConnect(options =>
-            {
-                options.ResponseType = OpenIdConnectResponseType.Code;
-                options.MetadataAddress = authOptions.Value.MetadataAddress;
-                options.ClientId = authOptions.Value.ClientId;
-                options.ClientSecret = authOptions.Value.ClientSecret;
-                options.GetClaimsFromUserInfoEndpoint = true;
-                //options.SaveTokens = authOptions.Value.SaveTokens;
-                //options.TokenValidationParameters = new TokenValidationParameters
-                //{
-                //    ValidateIssuer = authOptions.Value.TokenValidationParameters.ValidateIssuer
-                //};
-            });
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            //})
+            //.AddCookie()
+            //.AddOpenIdConnect(options =>
+            //{
+            //    options.ResponseType = OpenIdConnectResponseType.Code;
+            //    options.MetadataAddress = authOptions.Value.MetadataAddress;
+            //    options.ClientId = authOptions.Value.ClientId;
+            //    options.ClientSecret = authOptions.Value.ClientSecret;
+            //    options.GetClaimsFromUserInfoEndpoint = true;
+            //    //options.SaveTokens = authOptions.Value.SaveTokens;
+            //    options.SaveTokens = false;
+            //    options.RequireHttpsMetadata = true;
+
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = authOptions.Value.TokenValidationParameters.ValidateIssuer
+            //    };
+            //    //options.Scope.Add( "aws.cognito.signin.user.admin" );
+            //    options.Scope.Add( "openid" );
+            //    options.Scope.Add( "email" );
+            //    options.Scope.Add( "profile" );
+
+            //    options.Events = new OpenIdConnectEvents
+            //    {
+            //        // this makes signout working
+            //        OnRedirectToIdentityProviderForSignOut = OnRedirectToIdentityProviderForSignOut
+            //    };
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

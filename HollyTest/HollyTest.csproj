@@ -3,18 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
-    <UserSecretsId>aspnet-HollyTest-2F9C7111-1CDF-418C-8B6B-8001F7E49A0D</UserSecretsId>
+    <UserSecretsId>aspnet-HollyTest-55270D72-4CC3-4A1F-A819-D64A1DD1D0A6</UserSecretsId>
+    <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Amazon.AspNetCore.Identity.Cognito" Version="1.0.1" />
-    <PackageReference Include="Amazon.Extensions.CognitoAuthentication" Version="1.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0-preview6.19307.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0-preview6.19307.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0-preview6.19307.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview6.19304.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0-preview6.19304.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.0.0-preview6.19307.2" />
   </ItemGroup>
 
 </Project>

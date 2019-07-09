@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29021.104
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HollyTest", "HollyTest\HollyTest.csproj", "{F8732778-BFEA-4C61-84F5-2FD1345E4B0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HollyTest", "HollyTest\HollyTest.csproj", "{6B1E4189-02FF-48F3-BC92-A2201721F3D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F8732778-BFEA-4C61-84F5-2FD1345E4B0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8732778-BFEA-4C61-84F5-2FD1345E4B0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8732778-BFEA-4C61-84F5-2FD1345E4B0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8732778-BFEA-4C61-84F5-2FD1345E4B0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B1E4189-02FF-48F3-BC92-A2201721F3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B1E4189-02FF-48F3-BC92-A2201721F3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B1E4189-02FF-48F3-BC92-A2201721F3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B1E4189-02FF-48F3-BC92-A2201721F3D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C6B84B0E-333D-48D9-A4F9-A7281545B7AF}
+		SolutionGuid = {4215683E-71A7-4C83-8555-455155264B18}
 	EndGlobalSection
 EndGlobal

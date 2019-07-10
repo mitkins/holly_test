@@ -20,9 +20,26 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace HollyTest
 {
+    public class AddAuthorizeFiltersControllerConvention : IActionModelConvention
+    {
+        public void Apply(ActionModel action)
+        {
+            if (action.Controller.ControllerName.Contains("Api"))
+            {
+                action.Filters.Add(new AuthorizeFilter("apipolicy"));
+            }
+            else
+            {
+                action.Filters.Add(new AuthorizeFilter("Private"));
+            }
+        }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -45,13 +62,40 @@ namespace HollyTest
             // We should add this later!
             //services.AddCognitoIdentity();
 
-            services.AddControllersWithViews(options =>
+            //services.AddControllersWithViews(options =>
+            //{
+            //    var policy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+
+            //    options.Filters.Add(new AuthorizeFilter(policy));
+            //});
+
+            //services.AddMvc( options =>
+            //{
+            //    options.Conventions.Add( new AddAuthorizeFiltersControllerConvention() );
+            //});
+
+            //services.AddMvc()
+            //    .AddRazorPagesOptions(options =>
+            //    {
+            //        options.Conventions.AuthorizeFolder("/");
+            //        options.Conventions.AllowAnonymousToPage("/Index");
+            //        //options.Conventions.AllowAnonymousToPage("/");
+            //    })
+            //    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddAuthorization(options =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
+                options.AddPolicy("Private", policy => policy.RequireAuthenticatedUser());
+                //options.AddPolicy("AtLeast21", policy =>
+                //    policy.Requirements.Add(new MinimumAgeRequirement(21)));
             });
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("Private", policy => policy.RequireAuthenticatedUser() );
+            //});
 
             services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
 
@@ -64,7 +108,10 @@ namespace HollyTest
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie()
+            .AddCookie( options =>
+            {
+                options.LoginPath = "/";
+            })
             .AddOpenIdConnect(options =>
             {
                 options.ResponseType = authOptions.Value.ResponseType;
@@ -120,7 +167,7 @@ namespace HollyTest
             app.UseRouting();
 
             app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

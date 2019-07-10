@@ -1,6 +1,7 @@
-@page "/fetchdata"
+@page "/fetch/data"
 @using HollyTest.Data
 @inject WeatherForecastService ForecastService
+@attribute [Authorize(Policy = "Private")]
 
 <h1>Weather forecast</h1>
 

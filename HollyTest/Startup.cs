@@ -18,6 +18,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HollyTest
 {
@@ -35,59 +37,70 @@ namespace HollyTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>( options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")) );
-            services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
 
+            // We should add this later!
             //services.AddCognitoIdentity();
 
-            //services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
+            services.AddControllersWithViews(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
 
-            //var serviceProvider = services.BuildServiceProvider();
-            //var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();
+            services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
 
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            //})
-            //.AddCookie()
-            //.AddOpenIdConnect(options =>
-            //{
-            //    options.ResponseType = OpenIdConnectResponseType.Code;
-            //    options.MetadataAddress = authOptions.Value.MetadataAddress;
-            //    options.ClientId = authOptions.Value.ClientId;
-            //    options.ClientSecret = authOptions.Value.ClientSecret;
-            //    options.GetClaimsFromUserInfoEndpoint = true;
-            //    //options.SaveTokens = authOptions.Value.SaveTokens;
-            //    options.SaveTokens = false;
-            //    options.RequireHttpsMetadata = true;
+            var serviceProvider = services.BuildServiceProvider();
+            var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();
 
-            //    options.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuer = authOptions.Value.TokenValidationParameters.ValidateIssuer
-            //    };
-            //    //options.Scope.Add( "aws.cognito.signin.user.admin" );
-            //    options.Scope.Add( "openid" );
-            //    options.Scope.Add( "email" );
-            //    options.Scope.Add( "profile" );
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddOpenIdConnect(options =>
+            {
+                options.ResponseType = authOptions.Value.ResponseType;
+                options.MetadataAddress = authOptions.Value.MetadataAddress;
+                options.ClientId = authOptions.Value.ClientId;
+                options.ClientSecret = authOptions.Value.ClientSecret;
+                options.GetClaimsFromUserInfoEndpoint = authOptions.Value.GetClaimsFromUserInfoEndpoint;
+                options.SaveTokens = authOptions.Value.SaveTokens;
+                options.RequireHttpsMetadata = authOptions.Value.RequireHttpsMetadata;
 
-            //    options.Events = new OpenIdConnectEvents
-            //    {
-            //        // this makes signout working
-            //        OnRedirectToIdentityProviderForSignOut = OnRedirectToIdentityProviderForSignOut
-            //    };
-            //});
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = authOptions.Value.TokenValidationParameters.ValidateIssuer,
+                    NameClaimType = authOptions.Value.TokenValidationParameters.NameClaimType
+                };
+
+                options.Events = new OpenIdConnectEvents
+                {
+                    OnRedirectToIdentityProviderForSignOut = context =>
+                    {
+                        var logoutUri = "hollytest.auth.ap-southeast-2.amazoncognito.com/logout";
+                        var baseUri = "https://localhost:44380";
+
+                        logoutUri += $"?client_id={authOptions.Value.ClientId}&logout_uri={baseUri}";
+                        context.Response.Redirect(logoutUri);
+                        context.HandleResponse();
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -102,8 +115,12 @@ namespace HollyTest
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

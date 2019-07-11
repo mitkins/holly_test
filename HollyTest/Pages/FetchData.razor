@@ -1,7 +1,9 @@
-@page "/fetch/data"
+@page "/fetchdata"
 @using HollyTest.Data
 @inject WeatherForecastService ForecastService
-@attribute [Authorize(Policy = "Private")]
+@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+
 
 <h1>Weather forecast</h1>
 
@@ -37,10 +39,22 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     WeatherForecast[] forecasts;
 
     protected override async Task OnInitAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        var user = (await authenticationStateTask).User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            UriHelper.NavigateTo(@"\");
+        }
+        else
+        {
+            forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        }
     }
 }

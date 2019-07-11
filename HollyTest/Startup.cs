@@ -79,8 +79,8 @@ namespace HollyTest
             //services.AddMvc()
             //    .AddRazorPagesOptions(options =>
             //    {
-            //        options.Conventions.AuthorizeFolder("/");
-            //        options.Conventions.AllowAnonymousToPage("/Index");
+            //        options.Conventions.AuthorizeFolder("/Test");
+            //        options.Conventions.AllowAnonymousToPage("/");
             //        //options.Conventions.AllowAnonymousToPage("/");
             //    })
             //    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -98,6 +98,8 @@ namespace HollyTest
             //});
 
             services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
+
+            services.AddHttpContextAccessor();
 
             var serviceProvider = services.BuildServiceProvider();
             var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();

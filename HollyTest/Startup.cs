@@ -48,10 +48,16 @@ namespace HollyTest
             // We should add this later!
             //services.AddCognitoIdentity();
 
-            services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // Bypass GDPR requirements (for now) (!)
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
             services.AddHttpContextAccessor();
 
+            services.Configure<OpenIdConnectOptions>( Configuration.GetSection("Authentication:Cognito") );
             var serviceProvider = services.BuildServiceProvider();
             var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();
 

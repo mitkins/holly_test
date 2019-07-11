@@ -25,21 +25,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace HollyTest
 {
-    public class AddAuthorizeFiltersControllerConvention : IActionModelConvention
-    {
-        public void Apply(ActionModel action)
-        {
-            if (action.Controller.ControllerName.Contains("Api"))
-            {
-                action.Filters.Add(new AuthorizeFilter("apipolicy"));
-            }
-            else
-            {
-                action.Filters.Add(new AuthorizeFilter("Private"));
-            }
-        }
-    }
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -54,48 +39,14 @@ namespace HollyTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>( options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")) );
-            //services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
 
+            services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+
             // We should add this later!
             //services.AddCognitoIdentity();
-
-            //services.AddControllersWithViews(options =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-
-            //    options.Filters.Add(new AuthorizeFilter(policy));
-            //});
-
-            //services.AddMvc( options =>
-            //{
-            //    options.Conventions.Add( new AddAuthorizeFiltersControllerConvention() );
-            //});
-
-            //services.AddMvc()
-            //    .AddRazorPagesOptions(options =>
-            //    {
-            //        options.Conventions.AuthorizeFolder("/Test");
-            //        options.Conventions.AllowAnonymousToPage("/");
-            //        //options.Conventions.AllowAnonymousToPage("/");
-            //    })
-            //    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Private", policy => policy.RequireAuthenticatedUser());
-                //options.AddPolicy("AtLeast21", policy =>
-                //    policy.Requirements.Add(new MinimumAgeRequirement(21)));
-            });
-
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("Private", policy => policy.RequireAuthenticatedUser() );
-            //});
 
             services.Configure<OpenIdConnectOptions>(Configuration.GetSection("Authentication:Cognito"));
 
@@ -110,10 +61,7 @@ namespace HollyTest
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie( options =>
-            {
-                options.LoginPath = "/";
-            })
+            .AddCookie()
             .AddOpenIdConnect(options =>
             {
                 options.ResponseType = authOptions.Value.ResponseType;
@@ -123,6 +71,7 @@ namespace HollyTest
                 options.GetClaimsFromUserInfoEndpoint = authOptions.Value.GetClaimsFromUserInfoEndpoint;
                 options.SaveTokens = authOptions.Value.SaveTokens;
                 options.RequireHttpsMetadata = authOptions.Value.RequireHttpsMetadata;
+                options.SignedOutRedirectUri = "/";
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

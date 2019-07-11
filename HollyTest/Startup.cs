@@ -89,10 +89,10 @@ namespace HollyTest
                 {
                     OnRedirectToIdentityProviderForSignOut = context =>
                     {
-                        var logoutUri = "hollytest.auth.ap-southeast-2.amazoncognito.com/logout";
-                        var baseUri = "https://localhost:44380";
+                        var logoutUri = "https://hollytest.auth.ap-southeast-2.amazoncognito.com/logout";
+                        var baseUri = "https://localhost:5001/signout-oidc";
 
-                        logoutUri += $"?client_id={authOptions.Value.ClientId}&logout_uri={baseUri}";
+                        logoutUri += $"?client_id={authOptions.Value.ClientId}&logout_uri={baseUri}&redirect_uri=https://localhost:5000&response_type=code";
                         context.Response.Redirect(logoutUri);
                         context.HandleResponse();
 

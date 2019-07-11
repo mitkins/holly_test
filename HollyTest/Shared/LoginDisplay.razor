@@ -1,7 +1,7 @@
 <AuthorizeView>
     <Authorized>
         <span>Hello, @context.User.Identity.Name!</span>
-        <a href="signout-oidc">Log out</a>
+        <a href="Identity/Account/Logout">Log out</a>
     </Authorized>
     <NotAuthorized>
         <a href="Identity/Account/Register">Register</a>

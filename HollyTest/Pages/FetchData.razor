@@ -3,7 +3,7 @@
 @inject WeatherForecastService ForecastService
 @inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
-
+@attribute [Authorize]
 
 <h1>Weather forecast</h1>
 
@@ -48,13 +48,6 @@ else
     {
         var user = (await authenticationStateTask).User;
 
-        if (!user.Identity.IsAuthenticated)
-        {
-            UriHelper.NavigateTo(@"\");
-        }
-        else
-        {
-            forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-        }
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
     }
 }

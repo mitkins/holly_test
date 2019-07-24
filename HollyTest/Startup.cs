@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace HollyTest
 {
@@ -77,7 +78,6 @@ namespace HollyTest
                 options.GetClaimsFromUserInfoEndpoint = authOptions.Value.GetClaimsFromUserInfoEndpoint;
                 options.SaveTokens = authOptions.Value.SaveTokens;
                 options.RequireHttpsMetadata = authOptions.Value.RequireHttpsMetadata;
-                options.SignedOutRedirectUri = "/";
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -95,6 +95,14 @@ namespace HollyTest
                         logoutUri += $"?client_id={authOptions.Value.ClientId}&logout_uri={baseUri}&redirect_uri=https://localhost:5000&response_type=code";
                         context.Response.Redirect(logoutUri);
                         context.HandleResponse();
+
+                        return Task.CompletedTask;
+                    },
+
+                    OnTicketReceived = context =>
+                    {
+                        // You could record an existing redirect parameter in OnRedirectToIdentityProvider
+                        context.ReturnUri = "/fetchdata";
 
                         return Task.CompletedTask;
                     }

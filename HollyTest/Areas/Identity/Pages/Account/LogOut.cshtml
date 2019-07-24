@@ -13,9 +13,6 @@
             await SignInManager.SignOutAsync();
         }
 
-        await HttpContext.SignOutAsync( OpenIdConnectDefaults.AuthenticationScheme );
-        await HttpContext.SignOutAsync( CookieAuthenticationDefaults.AuthenticationScheme );
-
         return Redirect( "~/" );
     }
 }

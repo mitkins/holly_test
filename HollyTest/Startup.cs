@@ -49,49 +49,28 @@ namespace HollyTest
             // We should add this later!
             //services.AddCognitoIdentity();
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // Bypass GDPR requirements (for now) (!)
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
             services.AddHttpContextAccessor();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddOpenIdConnect(options =>
-            {
-                Configuration.GetSection("Authentication:Cognito").Bind(options );
+            services.AddAuthentication()
+                .AddCookie()
+                .AddOpenIdConnect(options => {
+                    Configuration.GetSection("Authentication:Cognito").Bind( options );
 
-                options.Events = new OpenIdConnectEvents
-                {
-                    OnRedirectToIdentityProviderForSignOut = context =>
+                    options.Events = new OpenIdConnectEvents
                     {
-                        var logoutUri = "https://hollytest.auth.ap-southeast-2.amazoncognito.com/logout";
-                        var baseUri = "https://localhost:5001/signout-oidc";
+                        OnRedirectToIdentityProviderForSignOut = context =>
+                        {
+                            var logoutUri = "https://hollytest.auth.ap-southeast-2.amazoncognito.com/logout";
+                            var baseUri = "https://localhost:5001/signout-oidc";
 
-                        logoutUri += $"?client_id={options.ClientId}&logout_uri={baseUri}&redirect_uri=https://localhost:5000&response_type=code";
-                        context.Response.Redirect(logoutUri);
-                        context.HandleResponse();
+                            logoutUri += $"?client_id={options.ClientId}&logout_uri={baseUri}&redirect_uri=https://localhost:5000&response_type=code";
+                            context.Response.Redirect(logoutUri);
+                            context.HandleResponse();
 
-                        return Task.CompletedTask;
-                    },
-
-                    OnTicketReceived = context =>
-                    {
-                        // You could record an existing redirect parameter in OnRedirectToIdentityProvider
-                        context.ReturnUri = "/fetchdata";
-
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

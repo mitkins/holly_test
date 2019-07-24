@@ -58,10 +58,6 @@ namespace HollyTest
 
             services.AddHttpContextAccessor();
 
-            services.Configure<OpenIdConnectOptions>( Configuration.GetSection("Authentication:Cognito") );
-            var serviceProvider = services.BuildServiceProvider();
-            var authOptions = serviceProvider.GetService<IOptions<OpenIdConnectOptions>>();
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -71,19 +67,7 @@ namespace HollyTest
             .AddCookie()
             .AddOpenIdConnect(options =>
             {
-                options.ResponseType = authOptions.Value.ResponseType;
-                options.MetadataAddress = authOptions.Value.MetadataAddress;
-                options.ClientId = authOptions.Value.ClientId;
-                options.ClientSecret = authOptions.Value.ClientSecret;
-                options.GetClaimsFromUserInfoEndpoint = authOptions.Value.GetClaimsFromUserInfoEndpoint;
-                options.SaveTokens = authOptions.Value.SaveTokens;
-                options.RequireHttpsMetadata = authOptions.Value.RequireHttpsMetadata;
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = authOptions.Value.TokenValidationParameters.ValidateIssuer,
-                    NameClaimType = authOptions.Value.TokenValidationParameters.NameClaimType
-                };
+                Configuration.GetSection("Authentication:Cognito").Bind(options );
 
                 options.Events = new OpenIdConnectEvents
                 {
@@ -92,7 +76,7 @@ namespace HollyTest
                         var logoutUri = "https://hollytest.auth.ap-southeast-2.amazoncognito.com/logout";
                         var baseUri = "https://localhost:5001/signout-oidc";
 
-                        logoutUri += $"?client_id={authOptions.Value.ClientId}&logout_uri={baseUri}&redirect_uri=https://localhost:5000&response_type=code";
+                        logoutUri += $"?client_id={options.ClientId}&logout_uri={baseUri}&redirect_uri=https://localhost:5000&response_type=code";
                         context.Response.Redirect(logoutUri);
                         context.HandleResponse();
 

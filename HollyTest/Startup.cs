@@ -63,7 +63,7 @@ namespace HollyTest
                             var logoutUri = "https://hollytest.auth.ap-southeast-2.amazoncognito.com/logout";
                             var baseUri = "https://localhost:5001/signout-oidc";
 
-                            logoutUri += $"?client_id={options.ClientId}&logout_uri={baseUri}&redirect_uri=https://localhost:5000&response_type=code";
+                            logoutUri += $"?client_id={options.ClientId}&logout_uri={baseUri}";
                             context.Response.Redirect(logoutUri);
                             context.HandleResponse();
 

@@ -1,9 +1,6 @@
 @page
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
-@using Microsoft.AspNetCore.Authentication.OpenIdConnect
-@using Microsoft.AspNetCore.Authentication;
-@using Microsoft.AspNetCore.Authentication.Cookies
 
 @functions {
     public async Task<IActionResult> OnGet()
